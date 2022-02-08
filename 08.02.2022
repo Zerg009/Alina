@@ -1,0 +1,446 @@
+/*
+Să se scrie un program în C care ține evidența produselor dintr-un magazin. Fiecare produs este descris
+de: nume_produs, cod_produs, preț, număr_bucăți și data_expirării.
+Să se realizeze un meniu interactiv cu următoarele opțiuni:
+0. Ieșire
+1. Citirea unui produs de la tastatură.
+2. Afișarea produselor citite.
+3. Afișarea produselor cu un preț mai mic decât un preț dat de utilizator.
+4. Să se afișeze toate produsele care au lungimea numelui egală cu un număr par.
+5. Afișarea primului produs care este egal cu un nume de produs introdus de utilizator de la tastatură.
+6. Să se realizeze produsul cifrelor fiecărui număr de bucăți al produselor, apoi să se copieze fiecare produs
+într-un vector și să se afișeze acel vector. Dacă se întâlnește o cifră egală cu 0 aceasta nu va fi luată în
+considerare.
+7. Copierea tuturor codurilor produselor într-un vector de șir de caractere, apoi afișarea vectorului.
+8. Copierea prețului produselor într-un vector, apoi afișarea vectorului în ordine crescătoare.
+9. Să se transforme prima literă din codul produsului în literă mare dacă aceasta este vocală. Nu se vor
+folosii funcții predefinite în transformarea literei.
+10. Să se afișeze forma binară a numărului de bucăți ale produselor cu numărul de bucăți mai mic decât
+100. În transformarea binară se vor folosii operații pe biți.
+11. Să se afișeze toate produsele care urmează să expire în următoarele 10 zile. Utilizatorul va preciza de
+la tastatură ziua și luna curentă. Se presupune că anul este egal cu 2024.
+12. Să se pună pe ultimul rând al unei matrice de caractere, de ordin dat de numărul de produse, primul
+caracter din fiecare nume de produs, iar pe restul elementelor se va pune caracterul “.”.
+13. Stabilirea unui nou preț pentru toate produsele dacă utilizatorul dorește. Astfel utilizatorul va stabilii
+procentajul cu care se vor scumpii produsele.
+14. Să se șteargă un produs precizat de utilizator prin numele acestuia.
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct {
+	char nume_produs[20];
+	char cod_produs[20];
+	float pret;
+	int numar_bucati;
+	int data_expirarii[3];
+} P;
+int verificare_nume(char* sir)
+{
+	int i;
+	for (i = 0; i < strlen(sir); ++i)
+	{
+		if (sir[i] >= 'A' && sir[i] <= 'Z')
+			return 0;
+	}
+	return 1;
+}
+int verificare_data(int data)
+{
+	if (data >= 1 && data <= 30)
+		return 1;
+	return 0;
+}
+int verificare_luna(int luna)
+{
+	if (luna >= 1 && luna <= 12)
+		return 1;
+	return 0;
+}
+void rev(char* nume, char* cod)
+{
+	int i;
+	for (i = strlen(nume) - 1; i >= 0; i--)
+	{
+		cod[strlen(nume) - 1 - i] = nume[i];
+	}
+	cod[strlen(nume)] = nume[strlen(nume)];
+}
+void adaugare(P* prod, int* n)
+{
+	printf("\n");
+	(*n)++;
+
+	do
+	{
+		printf("\nIntroduceti numele produsului: ");
+		scanf("%s", prod[*n].nume_produs);
+	} while (!verificare_nume(prod[*n].nume_produs));
+
+	rev(prod[*n].nume_produs, prod[*n].cod_produs);
+
+	printf("\nIntroduceti pretul produsului: ");
+	scanf("%f", &prod[*n].pret);
+
+	printf("\nIntroduceti numarul de bucati: ");
+	scanf("%d", &prod[*n].numar_bucati);
+
+	do
+	{
+		printf("\nIntroduceti ziua expirarii produsului: ");
+		scanf("%d", &prod[*n].data_expirarii[0]);
+	} while (!verificare_data(prod[*n].data_expirarii[0]));
+
+	do
+	{
+		printf("\nIntroduceti luna expirarii produsului: ");
+		scanf("%d", &prod[*n].data_expirarii[1]);
+	} while (!verificare_luna(prod[*n].data_expirarii[1]));
+
+	prod[*n].data_expirarii[2] = 2024;
+	printf("\n");
+}
+void afisare(P* prod, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		printf("\nNume produs: %s\n", prod[i].nume_produs);
+		printf("Cod produs: %s\n", prod[i].cod_produs);
+		printf("Pret produs: %.2f\n", prod[i].pret);
+		printf("Numar bucati: %d\n", prod[i].numar_bucati);
+		printf("Data expirarii: %d-%d-%d\n", prod[i].data_expirarii[0], prod[i].data_expirarii[1], prod[i].data_expirarii[2]);
+	}
+	printf("\n");
+}
+void afisare_pretmic(P* prod, int n, float pret)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		if (prod[i].pret < pret)
+		{
+			printf("\nNume produs: %s\n", prod[i].nume_produs);
+			printf("Cod produs: %s\n", prod[i].cod_produs);
+			printf("Pret produs: %.2f\n", prod[i].pret);
+			printf("Numar bucati: %d\n", prod[i].numar_bucati);
+			printf("Data expirarii: %d-%d-%d\n", prod[i].data_expirarii[0], prod[i].data_expirarii[1], prod[i].data_expirarii[2]);
+
+		}
+
+	}
+	printf("\n");
+}
+void afisare_nume_egal_par(P* prod, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		if (strlen(prod[i].nume_produs) % 2 == 0)
+		{
+			printf("\nNume produs: %s\n", prod[i].nume_produs);
+			printf("Cod produs: %s\n", prod[i].cod_produs);
+			printf("Pret produs: %.2f\n", prod[i].pret);
+			printf("Numar bucati: %d\n", prod[i].numar_bucati);
+			printf("Data expirarii: %d-%d-%d\n", prod[i].data_expirarii[0], prod[i].data_expirarii[1], prod[i].data_expirarii[2]);
+
+		}
+
+	}
+	printf("\n");
+}
+void afisare_nume_egal(P* prod, int n, char* nume)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		if (strcmp(prod[i].nume_produs, nume) == 0)
+		{
+			printf("\nNume produs: %s\n", prod[i].nume_produs);
+			printf("Cod produs: %s\n", prod[i].cod_produs);
+			printf("Pret produs: %.2f\n", prod[i].pret);
+			printf("Numar bucati: %d\n", prod[i].numar_bucati);
+			printf("Data expirarii: %d-%d-%d\n", prod[i].data_expirarii[0], prod[i].data_expirarii[1], prod[i].data_expirarii[2]);
+
+		}
+
+	}
+	printf("\n");
+}
+void produs_vec(P* prod, int n)
+{
+	int i;
+	int p;
+	int temp;
+	int* vec;
+	vec = (int*)malloc(n * sizeof(int));
+	for (i = 0; i <= n; ++i)
+	{
+		p = 1;
+		temp = prod[i].numar_bucati;
+		while (temp != 0) {
+			if (temp % 10 != 0)
+			{
+				p *= temp % 10;
+			}
+			temp /= 10;
+		}
+		vec[i] = p;
+	}
+	for (i = 0; i <= n; ++i)
+	{
+		printf("%d ", vec[i]);
+	}
+}
+void afisare_cod_vector(P* prod, int n)
+{
+	printf("\n");
+	char v[20][40];
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		strcpy(v[i] , prod[i].cod_produs);
+	}
+	for (i = 0; i <= n ; ++i)
+	{
+		printf("%s ", v[i]);
+	}
+	printf("\n");
+}
+void afisare_pret_vector(P* prod, int n)
+{
+	printf("\n");
+	float v[20];
+	int i, j;
+	float aux;
+
+	for (i = 0; i <= n; ++i)
+	{
+		v[i] = prod[i].pret;
+	}
+	for (i = 0; i < n; ++i)
+	{
+		for (j = 0; j < n - i; ++j)
+		{
+			if (v[j] > v[j + 1])
+			{
+				aux = v[j];
+				v[j] = v[j + 1];
+				v[j + 1] = aux;
+			}
+		}
+	}
+	for (i = 0; i <= n; ++i)
+	{
+		printf("%.2f ", v[i]);
+	}
+	printf("\n");
+}
+void decimal_to_binary(int nr)
+{
+	printf("\n");
+	int* bin;
+	bin = (int*)calloc(33, sizeof(int));
+	int i;
+	for (i = 0; i < 32; ++i)
+	{
+		bin[31 - i] = (nr >> i) & 1;
+	}
+	for (i = 0; i < 32; ++i)
+	{
+		printf("%d", bin[i]);
+	}
+	printf("\n");
+}
+void afis_forma_binara(P* prod, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		if (prod[i].numar_bucati < 100)
+			decimal_to_binary(prod[i].numar_bucati);
+	}
+	printf("\n");
+}
+void expira(P* prod, int n, int zile, int luni)
+{
+	printf("\n");
+	int i;
+	int ziua, luna;
+	for (i = 0; i <= n; ++i)
+	{
+		ziua = prod[i].data_expirarii[0]; //5 zile
+		luna = prod[i].data_expirarii[1]; //1 luna
+		if ((luna * 30 + ziua) - (luni * 30 + zile) <= 10)
+		{
+			printf("\nNume produs: %s\n", prod[i].nume_produs);
+			printf("Cod produs: %s\n", prod[i].cod_produs);
+			printf("Pret produs: %.2f\n", prod[i].pret);
+			printf("Numar bucati: %d\n", prod[i].numar_bucati);
+			printf("Data expirarii: %d-%d-%d\n", prod[i].data_expirarii[0], prod[i].data_expirarii[1], prod[i].data_expirarii[2]);
+
+		}
+	}
+	printf("\n");
+}
+void afisare_matrice(P* prod, int n)
+{
+	char mat[20][20];
+	int i, j;
+	for (i = 0; i <= n; ++i)
+	{
+		printf("\n");
+		for (j = 0; j <= n; ++j)
+		{
+			if (i != n)
+			{
+				mat[i][j] = '.';
+			}
+			else
+			{
+				mat[i][j] = prod[j].nume_produs[0];
+			}
+		}
+	}
+	for (i = 0; i <= n; ++i)
+	{
+		printf("\n");
+		for (j = 0; j <= n; ++j)
+		{
+			printf("%c ", mat[i][j]);
+		}
+	}
+	printf("\n");
+}
+void pretul_nou(P* prod, int n, float p)
+{
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		prod[i].pret += prod[i].pret * p / 100;
+	}
+	afisare(prod, n);
+}
+void stergere(P* prod, int* n, char* num)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= *n; ++i)
+	{
+		if (strcmp(prod[i].nume_produs, num) == 0)
+		{
+			prod[i] = prod[i + 1];
+			(*n)--;
+			i--;
+		}
+	}
+	afisare(prod, *n);
+	printf("\n");
+}
+int main()
+{
+	int n = -1, opt;
+	P produs[20];
+	float pretul;
+	char numele[20];
+	int zi, luna;
+	float pret_nou;
+	char nume_nou[20];
+
+	while (1) {
+		printf(
+		    "\n0.Iesire\n"
+		    "1. Citire/Adaugare\n"
+		    "2. Afisare\n"
+		    "3. Afișarea produselor cu un preț mai mic decât un preț dat de utilizator.\n"
+		    "4. Să se afișeze toate produsele care au lungimea numelui egală cu un număr par\n"
+		    "5. Afișarea primului produs care este egal cu un nume de produs introdus de utilizator de la tastatură.\n"
+		    "6. Să se realizeze produsul cifrelor fiecărui număr de bucăți al produselor,\n"
+		    "7. Copierea tuturor codurilor produselor într-un vector de șir de caractere, apoi afișarea vectorului.\n"
+		    "8. Copierea prețului produselor într-un vector, apoi afișarea vectorului în ordine crescătoare.\n"
+		    "9. Forma binara\n"
+		    "10. Să se transforme prima literă din codul produsului în literă mare dacă aceasta este vocală.\n"
+		    "11. Să se afișeze toate produsele care urmează să expire în următoarele 10 zile.\n"
+		    "12. Să se pună pe ultimul rând al unei matrice de caractere\n"
+		    "13. Stabilirea unui nou preț pentru toate produsele dacă utilizatorul dorește.\n"
+		    "14. Să se șteargă un produs precizat de utilizator prin numele acestuia.\n"
+		);
+		printf("Introduceti optiunea: ");
+		scanf("%d", &opt);
+
+		switch (opt) {
+
+		case 0:
+
+			printf("\nProgram finished succesfully!\n");
+			exit(0);
+			break;
+		case 1:
+			adaugare(produs, &n);
+			break;
+		case 2:
+			afisare(produs, n);
+			break;
+		case 3:
+			printf("\nIntroduceti pretul cautat: ");
+			scanf("%f", &pretul);
+			afisare_pretmic(produs, n, pretul);
+			break;
+		case 4:
+			afisare_nume_egal_par(produs, n);
+			break;
+		case 5:
+			printf("\nIntroduceti numele cautat: ");
+			scanf("%s", numele);
+			afisare_nume_egal(produs, n, numele);
+			break;
+		case 6:
+			produs_vec(produs, n);
+			break;
+		case 7:
+			afisare_cod_vector(produs, n);
+			break;
+		case 8:
+			afisare_pret_vector(produs, n);
+			break;
+		case 9:
+			afis_forma_binara(produs, n);
+			break;
+		case 10:
+			printf("\nIntroduceti data curenta: ");
+			scanf("%d", &zi);
+			printf("\nIntroduceti luna curenta: ");
+			scanf("%d", &luna);
+			expira(produs, n, zi, luna);
+			break;
+		case 11:
+			afisare_matrice(produs, n);
+			break;
+		case 12:
+			printf("\nIntroduceti procentul scumpirii: ");
+			scanf("%f", &pret_nou);
+			pretul_nou(produs, n, pret_nou);
+			break;
+		case 13:
+			printf("\nIntroduceti numele dorit: ");
+			scanf("%s", nume_nou);
+			stergere(produs, &n, nume_nou);
+			break;
+		case 14:
+
+			break;
+
+		default:
+			printf("\nOptiunea gresita!\n");
+			break;
+		}
+	}
+	return 0;
+}
