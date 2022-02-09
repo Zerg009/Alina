@@ -1,0 +1,170 @@
+/*
+Să se scrie un program care ţine evidenţa televizoarelor dintr-un magazin. Pentru fiecare televizor se specifică
+în parte: marca, diagonală și pret.
+Să se facă un meniu interactiv care să conțină următoarele operaţii:
+0. Ieșire
+1. Adăugarea unui nou televizor în stocul magazinului.
+Observații.:
+• Marca televizorului este citită corect doar dacă are următoarea formă: prima literă este mare, iar
+următoarele caractere sunt litere mici sau cifre.
+• Diagonala televizorului este dată automat fiind produsul cifrelor din model (ex.: daca modelul este
+Adl32m3, atunci diagonala este 18). Nu se vor lua în considerare cifrele egale cu 0 în calculul
+produsului.
+2. Afișarea televizoarelor din magazin în ordine descrescătoare după preț. Se va utiliza algoritmul bubble
+sort.
+3. Afișarea reprezentărilor binare ale diagonalelor televizoarelor. Se vor considera doar diagonalele care se
+pot reprezenta pe maxim 2 octeți. Se vor utiliza operații pe biți în aflarea reprezentărilor binare.
+Observatii:
+· Programul se va implementa folosind vectori de structuri.
+· Pentru fiecare opțiune se va crea o funcție, iar variabilele se vor transmite prin adresă.
+· Nu este permisă folosirea variabilelor globale.
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct {
+	char marca[20];
+	int diagonala;
+	float pret;
+} T;
+int verificare_nume(char* sir)
+{
+	int i;
+	if (sir[0] >= 'a' && sir[0] <= 'z')
+	{
+		return 0;
+	}
+	for (i = 1; i < strlen(sir); ++i)
+	{
+		if (sir[i] >= 'a' && sir[i] <= 'z' || sir[i] >= '0' && sir[i] <= '9')
+			return 1;
+	}
+	return 1;
+}
+void adaugare(T* tel, int* n)
+{
+	printf("\n");
+	int p, i;
+	p = 1;
+	(*n)++;
+	do
+	{
+		printf("\nIntroduceti marca: ");
+		scanf("%s", tel[*n].marca);
+	} while (!verificare_nume(tel[*n].marca));
+
+	for (i = 0; i < strlen(tel[*n].marca); ++i)
+	{
+		if (tel[*n].marca[i] >= '1' && tel[*n].marca[i] <= '9')
+		{
+			p *= (tel[*n].marca[i] - '0');
+		}
+	}
+
+	tel[*n].diagonala = p;
+
+	printf("Introduceti pretul: ");
+	scanf("%f", &tel[*n].pret);
+	printf("\n");
+
+}
+void afisare(T* tel, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		printf("\nMarca: %s\n", tel[i].marca);
+		printf("Lungimea diagonalei: %d\n", tel[i].diagonala);
+		printf("Pretul: %.2f\n", tel[i].pret);
+	}
+	printf("\n");
+}
+void afisare_desc_sortat(T* tel, int n)
+{
+	printf("\n");
+	int i, j;
+	T aux;
+	for (i = 0; i <= n; ++i)
+	{
+		for (j = 0; j <= n - i; ++j)
+		{
+			if (tel[j].pret < tel[j + 1].pret)
+			{
+				aux = tel[j];
+				tel[j] = tel[j + 1];
+				tel[j + 1] = aux;
+			}
+		}
+	}
+	afisare(tel, n);
+	printf("\n");
+}
+void repr_binara(int nr)
+{
+	printf("\n");
+	int i;
+	int* arr;
+	arr=(int*)calloc(32,sizeof(int));
+	for (i = 0; i < 32; ++i)
+	{
+		arr[31-i]=(nr>>i) & 1;
+	}
+	for (i = 0; i < 32; ++i)
+	{
+		printf("%d", arr[i]);
+	}
+	printf("\n");
+}
+void borma_finara(T* tel, int n)
+{
+	printf("\nFormele binare: ");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		if(tel[i].diagonala<=65535)
+		{
+			repr_binara(tel[i].diagonala);
+		}
+	}
+}
+int main()
+{
+	int n = -1, opt;
+	T televizor[20];
+
+	while (1) {
+		printf(
+		    "\n0.Iesire\n"
+		    "1. Citire/Adaugare\n"
+		    "2. Afisare\n"
+		    "3. Afisarea reprezentarilor binare\n"
+		);
+		printf("Introduceti optiunea: ");
+		scanf("%d", &opt);
+
+		switch (opt) {
+
+		case 0:
+
+			printf("\nProgram finished succesfully!\n");
+			exit(0);
+			break;
+		case 1:
+			adaugare(televizor, &n);
+			break;
+		case 2:
+			afisare_desc_sortat(televizor, n);
+			break;
+		case 3:
+			borma_finara(televizor, n);
+			break;
+		default:
+			printf("\nOptiunea gresita!\n");
+			break;
+		}
+	}
+	return 0;
+}
