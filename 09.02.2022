@@ -1,0 +1,232 @@
+/*
+Fie un text format din maxim 50 de fructe care au lungimea maxima de 20 de caractere. Realizati
+un meniu interactiv cu urmatoarele optiuni:
+0. Iesire.
+1. Citirea a n fructe de la tastatura.
+2. Afisarea fructelor citite.
+3. Cautarea fructelor care sunt egale cu un fruct citit de la tastatura.
+4. Sortarea fructelor in ordine invers alfabetica.
+5. Sa se afiseze sub forma unei matrice patratice de ordinul dat de numarul de fructe, o matrice
+ce are pe diagonala secundara lungimea maxima a fructulelor din text, iar pe restul
+elementelor 0.
+6. Sa se afiseze toate fructele ce au lungimea egala cu o putere a lui 2.
+7. Sa se inlocuiasca toate caracterele ‘a’ din fructe cu caracterul ‘?’.
+8. Sa se stearga toate fructele care sunt egale cu un fruct citit de la tastatura.
+Observatii:
+- Numele primului fruct este dat automat fiind egal cu “mar”
+- Numele ultimului fruct este dat automat fiind egal cu “cireasa”
+- Toate fructele sunt formate strict din litere mici
+- Nu este permisa folosirea vectorilor de structuri
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int verificare(char* F)
+{
+	int i;
+
+	for (i = 0; i < strlen(F); ++i)
+	{
+		if (F[i] >= 'A' && F[i] <= 'Z')
+			return 0;
+	}
+
+	return 1;
+}
+void afisare(char F[][20], int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i < n; ++i)
+	{
+		printf("%s, ", F[i]);
+	}
+	printf("\n");
+}
+void cautare(char F[][20], char* nume, int n)
+{
+	int i;
+	for (i = 0; i < n; ++i)
+	{
+		if (strcmp(F[i], nume) == 0)
+			printf("%s\n", F[i]);
+	}
+}
+void sortare(char F[][20], int n)
+{
+	int i, j;
+	char aux[20];
+	for (i = 0; i < n - 1; ++i)
+	{
+		for (j = 0; j < n - 1 - i; ++j)
+		{
+			if (strcmp(F[j], F[j + 1]) < 0)
+			{
+				strcpy(aux, F[j]);
+				strcpy(F[j], F[j + 1]);
+				strcpy(F[j + 1], aux);
+			}
+		}
+	}
+}
+int maxim(int n, char F[][20])
+{
+	int i;
+	int max;
+	max = 0;
+	for (i = 0; i < n; ++i)
+	{
+		if (max < strlen(F[i]))
+		{
+			max = strlen(F[i]);
+		}
+	}
+
+	return max;
+}
+void matrix(char F[][20], int n)
+{
+	int i, j;
+	for (i = 0; i < n; ++i)
+	{
+		printf("\n");
+		for (j = 0; j < n; ++j)
+		{
+			if (i == n - j - 1)
+			{
+				printf("%d ", maxim(n, F));
+			}
+			else
+			{
+				printf("0 ");
+			}
+		}
+	}
+}
+void afisare_putere(char F[][20], int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i < n; ++i)
+	{
+		if (!(strlen(F[i]) & (strlen(F[i]) - 1)))
+		{
+			printf("%s, ", F[i]);
+		}
+	}
+	printf("\n");
+}
+void inlocuire(char F[][20], int n)
+{
+	int i, j;
+	for (i = 0; i < n; ++i)
+	{
+		for (j = 0; j < strlen(F[i]); ++j)
+		{
+			if (F[i][j] == 'a')
+			{
+				F[i][j] = '?';
+			}
+		}
+	}
+}
+void stergere(char F[][20], int* n, char* sters)
+{
+	int i, j;
+	for (i = 0; i < *n; ++i)
+	{
+		if (strcmp(F[i], sters) == 0)
+		{
+
+			for (j = 0; j < *n; ++j)
+			{
+				strcpy(F[j], F[j + 1]);
+			}
+			(*n)--;
+			i--;
+
+		}
+	}
+}
+
+int main()
+{
+	int n, opt;
+	char fr[50][20];
+	int i;
+	char nume[20];
+	char nume_s[20];
+
+
+	while (1) {
+		printf(
+		    "\n0.Iesire\n"
+		    "1. Citirea a n fructe de la tastatura.\n"
+		    "2. Afisarea fructelor citite.\n"
+		    "3. Cautarea fructelor care sunt egale cu un fruct citit de la tastatura.\n"
+		    "4. Sortarea fructelor in ordine invers alfabetica.\n"
+		    "5. Sa se afiseze sub forma unei matrice patratice de ordinul dat de numarul de fructe,\n"
+		    "6. Sa se afiseze toate fructele ce au lungimea egala cu o putere a lui 2.\n"
+		    "7. Sa se inlocuiasca toate caracterele ‘a’ din fructe cu caracterul ‘?’.\n"
+		    "8. Sa se stearga toate fructele care sunt egale cu un fruct citit de la tastatura.\n"
+		);
+
+		printf("Introduceti optiunea: ");
+		scanf("%d", &opt);
+
+		switch (opt) {
+
+		case 0:
+
+			printf("\nProgram finished succesfully!\n");
+			exit(0);
+			break;
+		case 1:
+			printf("Introduceti numarul de elemente: ");
+			scanf("%d", &n);
+			strcpy(fr[0], "mar");
+			strcpy(fr[n - 1], "cireasa");
+
+			for (i = 1; i < n - 1; ++i)
+			{
+				do
+				{
+					printf("Dati elementul fr[%d] = ", i);
+					scanf("%s", fr[i]);
+				} while (!verificare(fr[i]));
+			}
+			break;
+		case 2:
+			afisare(fr, n);
+			break;
+		case 3:
+			printf("Introduceti numele cautat: ");
+			scanf("%s", nume);
+			cautare(fr, nume, n);
+			break;
+		case 4:
+			sortare(fr, n);
+			break;
+		case 5:
+			matrix(fr, n);
+			break;
+		case 6:
+			afisare_putere(fr, n);
+			break;
+		case 7:
+			inlocuire(fr, n);
+			break;
+		case 8:
+			printf("Introduceti numele cautat: ");
+			scanf("%s", nume_s);
+			stergere(fr, &n, nume_s);
+			break;
+		default:
+			printf("\nOptiunea gresita!\n");
+			break;
+		}
+	}
+	return 0;
+}
