@@ -1,0 +1,279 @@
+/*
+Să se realizeze un program în C care realizează gestiunea pacienților unui medic de familie. Să se
+realizeze un meniu interactiv pentru următoarele opțiuni:
+1. Adăugarea informațiilor despre pacient: nume, prenume, vârstă, greutate, înălțime,
+hipertensiune (1/0, dacă se introduce 1 atunci pacientul are hipertensiune, iar dacă se introduce
+0 acesta nu are hipertensiune.).
+2. Afișarea tuturor pacienților pe ecran.
+3. Afisarea pacienților cu vârsta mai mare de 60 de ani.
+4. Afișarea alfabetică după prenume a pacienților.
+5. Afișarea tuturor pacienților care au hipertensiune.
+6. Afișarea în ordine descrescătoare după vârstă a pacienților.
+7. Afișarea numărului de pacienți cu vârsta mai mica de 30 de ani.
+8. Să se adune la toți pacienții care au vârsta mai mare decât 50, 5 kilograme la greutatea
+acestora.
+9. Să se afișeze toți pacienții care au vârsta egală cu o putere a lui 2.
+10.Să se șteargă toți pacienții care au vârsta mai mare de 110 de ani.
+0. Ieșire
+Problema se va implementa folosind vectori de structuri.
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct {
+	char nume[20];
+	char prenume[20];
+	int varsta;
+	float greutate;
+	int inaltime;
+	int hipertensiune;
+} P;
+void adaugare(P* pac, int* n)
+{
+	printf("\n");
+	(*n)++;
+	printf("\nIntroduceti numele: ");
+	scanf("%s", pac[*n].nume);
+
+	printf("Introduceti prenumele: ");
+	scanf("%s", pac[*n].prenume);
+
+	printf("Introduceti varsta: ");
+	scanf("%d", &pac[*n].varsta);
+
+	printf("Introduceti greutatea: ");
+	scanf("%f", &pac[*n].greutate);
+
+	printf("Introduceti inaltimea: ");
+	scanf("%d", &pac[*n].inaltime);
+
+	do
+	{
+		printf("Introduceti hipertensiunea (1/0): ");
+		scanf("%d", &pac[*n].hipertensiune);
+	} while (!(pac[*n].hipertensiune == 1 || pac[*n].hipertensiune == 0));
+	printf("\n");
+}
+void afisare(P* pac, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		printf("\nNume: %s\n", pac[i].nume);
+		printf("Prenume: %s\n", pac[i].prenume);
+		printf("Varsta: %d\n", pac[i].varsta);
+		printf("Greutate: %.2f\n", pac[i].greutate);
+		printf("Inaltime: %d\n", pac[i].inaltime);
+		printf("Hipertensiune: %d\n", pac[i].hipertensiune);
+
+	}
+	printf("\n");
+}
+void afisare_pacienti60(P* pac, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		if (pac[i].varsta > 60)
+		{
+			printf("\nNume: %s\n", pac[i].nume);
+			printf("Prenume: %s\n", pac[i].prenume);
+			printf("Varsta: %d\n", pac[i].varsta);
+			printf("Greutate: %.2f\n", pac[i].greutate);
+			printf("Inaltime: %d\n", pac[i].inaltime);
+			printf("Hipertensiune: %d\n", pac[i].hipertensiune);
+
+		}
+	}
+	printf("\n");
+}
+void afisare_prenume_sortat(P* pac, int n)
+{
+	printf("\n");
+	int i, j;
+	P aux;
+	for (i = 0; i <= n; ++i)
+	{
+		for (j = 0; j <= n - i; ++j)
+		{
+			if (strcmp(pac[j].prenume, pac[j + 1].prenume) > 0)
+			{
+				aux = pac[j];
+				pac[j] = pac[j + 1];
+				pac[j + 1] = aux;
+			}
+		}
+	}
+	afisare(pac, n);
+	printf("\n");
+}
+void afisare_hipertensiune(P* pac, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		if (pac[i].hipertensiune == 1)
+		{
+			printf("\nNume: %s\n", pac[i].nume);
+			printf("Prenume: %s\n", pac[i].prenume);
+			printf("Varsta: %d\n", pac[i].varsta);
+			printf("Greutate: %.2f\n", pac[i].greutate);
+			printf("Inaltime: %d\n", pac[i].inaltime);
+			printf("Hipertensiune: %d\n", pac[i].hipertensiune);
+		}
+	}
+	printf("\n");
+}
+void afisare_varsta_desc(P* pac, int n)
+{
+	printf("\n");
+	int i, j;
+	P aux;
+	for (i = 0; i <= n; ++i)
+	{
+		for (j = 0; j <= n - i; ++j)
+		{
+			if (pac[j].varsta < pac[j + 1].varsta)
+			{
+				aux = pac[j];
+				pac[j] = pac[j + 1];
+				pac[j + 1] = aux;
+			}
+		}
+	}
+	afisare(pac, n);
+	printf("\n");
+}
+void afisare_pacienti30(P* pac, int n)
+{
+	printf("\n");
+	int i;
+	int count;
+	count = 0;
+	for (i = 0; i <= n; ++i)
+	{
+		if (pac[i].varsta < 30)
+		{
+			count++;
+		}
+	}
+	printf("%d", count);
+	printf("\n");
+}
+void afisare_greutateplus(P* pac, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		if (pac[i].varsta > 50)
+		{
+			pac[i].greutate += 5;
+		}
+	}
+}
+void afisare_putere2(P* pac, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		if (!(pac[i].varsta & (pac[i].varsta - 1)))
+		{
+			printf("\nNume: %s\n", pac[i].nume);
+			printf("Prenume: %s\n", pac[i].prenume);
+			printf("Varsta: %d\n", pac[i].varsta);
+			printf("Greutate: %.2f\n", pac[i].greutate);
+			printf("Inaltime: %d\n", pac[i].inaltime);
+			printf("Hipertensiune: %d\n", pac[i].hipertensiune);
+		}
+	}
+	printf("\n");
+}
+void stergere(P* pac, int* n)
+{
+	int i, j;
+	for (i = 0; i <= *n; ++i)
+	{
+		if (pac[i].varsta > 110)
+		{
+			for (j = i; j < *n; ++j)
+			{
+				pac[j] = pac[j + 1];
+			}
+			(*n)--;
+			i--;
+		} 
+	}
+	afisare(pac, *n);
+}
+int main()
+{
+	int n = -1, opt;
+	P pacient[20];
+	while (1) {
+		printf(
+		    "\n0.Iesire\n"
+		    "1. Citire/Adaugare pacient\n"
+		    "2. Afisarea pacientilor\n"
+		    "3. Afisarea pacientilor cu varsta mai mare de 60\n"
+		    "4. Afisarea in ordine alfabetica dupa prenume \n"
+		    "5. Afisarea tuturor pacientilor cu hipertensiune \n"
+		    "6. Afisarea in ordine descrscatoare dupa varsta\n"
+		    "7. Afisarea numarului de pacienticu varsta mai mica de 30 de ani\n"
+		    "8.  Să se adune la toți pacienții care au vârsta mai mare decât 50, 5 kilograme la greutatea acestora.\n"
+		    "9. Să se afișeze toți pacienții care au vârsta egală cu o putere a lui 2.\n"
+		    "10. Să se șteargă toți pacienții care au vârsta mai mare de 110 de ani\n"
+		);
+		printf("Introduceti optiunea: ");
+		scanf("%d", &opt);
+
+		switch (opt) {
+
+		case 0:
+
+			printf("\nProgram finished succesfully!\n");
+			exit(0);
+			break;
+		case 1:
+			adaugare(pacient, &n);
+			break;
+		case 2:
+			afisare(pacient, n);
+			break;
+		case 3:
+			afisare_pacienti60(pacient, n);
+			break;
+		case 4:
+			afisare_prenume_sortat(pacient, n);
+			break;
+		case 5:
+			afisare_hipertensiune(pacient, n);
+			break;
+		case 6:
+			afisare_varsta_desc(pacient, n);
+			break;
+		case 7:
+			afisare_pacienti30(pacient, n);
+			break;
+		case 8:
+			afisare_greutateplus(pacient, n);
+			break;
+		case 9:
+			afisare_putere2(pacient, n);
+			break;
+		case 10:
+			stergere(pacient, &n);
+			break;
+		default:
+			printf("\nOptiunea gresita!\n");
+			break;
+		}
+	}
+	return 0;
+}
