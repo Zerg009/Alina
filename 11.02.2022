@@ -1,0 +1,140 @@
+/*
+Să se scrie un program care ține evidența jucăriilor dintr-un magazin de jucării. Pentru fiecare jucărie se
+specifică în parte: nume, material și preț.
+Să se facă un meniu interactiv care să conţină următoarele operaţii:
+0. Ieșire
+1. Adăugarea unei noi jucării în stocul magazinului.
+Observații:
+• Numele jucăriilor este considerat citit corect dacă este format doar din litere mici.
+• Prețul fiecărei jucării este dat automat, fiind egal cu media aritmetică a caracterelor ASCII al numelui
+acestora. (ex. dacă numele este abc, atunci prețul este egal cu (97+98+99)/3).
+2. Afișarea jucăriilor din magazin în ordine alfabetică după nume.
+3. Să se afișeze câte jucării au lungimea materialelor mai mică cu 2 decât o putere a lui 2. Se vor utiliza
+doar operații pe biți.
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct {
+	char nume[20];
+	char material[20];
+	float pret;
+} J;
+int verificare_nume(char* sir)
+{
+	int i;
+	for (i = 0; i < strlen(sir); ++i)
+	{
+		if (sir[i] >= 'A' && sir[i] <= 'Z')
+			return 0;
+	}
+	return 1;
+}
+void adaugare(J* joc, int* n)
+{
+	printf("\n");
+	int i, suma = 0;
+	(*n)++;
+	do
+	{
+		printf("\nIntroduceti numele: ");
+		scanf("%s", joc[*n].nume);
+	} while (!verificare_nume(joc[*n].nume));
+
+	printf("Introduceti materialul: ");
+	scanf("%s", joc[*n].material);
+
+	for (i = 0; i < strlen(joc[*n].nume); ++i)
+	{
+		suma += joc[*n].nume[i];
+	}
+
+	joc[*n].pret = suma / strlen(joc[*n].nume);
+}
+void afisare(J* joc, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		printf("\nNume: %s\n", joc[i].nume);
+		printf("Material: %s\n", joc[i].material);
+		printf("Pret: %.2f\n", joc[i].pret);
+	}
+	printf("\n");
+}
+void afisare_sortat(J* joc, int n)
+{
+	printf("\n");
+	int i, j;
+	J aux;
+	for (i = 0; i < n; ++i)
+	{
+		for (j = 0; j < n - i; ++j)
+		{
+			if (strcmp(joc[i].nume, joc[i + 1].nume))
+			{
+				aux = joc[i];
+				joc[i] = joc[i + 1];
+				joc[i + 1] = aux;
+			}
+		}
+	}
+	afisare(joc, n);
+	printf("\n");
+}
+void afisare_putere(J* joc, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		if (!((strlen(joc[i].material) + 2) & (strlen(joc[i].material) + 1)))
+		{
+			printf("\nNume: %s\n", joc[i].nume);
+			printf("Material: %s\n", joc[i].material);
+			printf("Pret: %.2f\n", joc[i].pret);
+		}
+	}
+	printf("\n");
+}
+int main()
+{
+	int n = -1, opt;
+	J jucarii[20];
+
+	while (1) {
+		printf(
+		    "\n0.Iesire\n"
+		    "1. Citire/Adaugare\n"
+		    "2. Afisare\n"
+		    "3. Să se afișeze câte jucării au lungimea materialelor mai mică cu 2 decât o putere a lui 2.\n"
+		);
+		printf("Introduceti optiunea: ");
+		scanf("%d", &opt);
+
+		switch (opt) {
+
+		case 0:
+
+			printf("\nProgram finished succesfully!\n");
+			exit(0);
+			break;
+		case 1:
+			adaugare(jucarii, &n);
+			break;
+		case 2:
+			afisare_sortat(jucarii, n);
+			break;
+		case 3:
+			afisare_putere(jucarii, n);
+			break;
+		default:
+			printf("\nOptiunea gresita!\n");
+			break;
+		}
+	}
+	return 0;
+}
