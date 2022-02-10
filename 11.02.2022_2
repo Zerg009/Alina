@@ -1,0 +1,156 @@
+/*
+Să se scrie un program care ţine evidenţa senzorilor dintr-un magazin. Pentru fiecare senzor se specifică în
+parte: nume_senzor,număr_pini și preț.
+Să se facă un meniu interactiv care să conţină următoarele operaţii:
+0. Ieșire
+1. Adăugarea unui nou senzor în stocul magazinului.
+Observații:
+• Numele senzorului este considerat citit corect dacă are următoarea formă.
+Literă_marecifră-lieremici
+Ex.: K8-abcd
+• Numărul de pini este considerat citit corect dacă face parte din intervalul [1; 8].
+2. Afișarea senzorilor din magazin în ordine descrescătoare după preț.
+3. Afișarea senzorilor care au prețul mai mic cu 1 decât o putere a lui 2. Se vor utiliza operații pe biți în aflarea
+prețurilor care sunt mai mici cu 1 decât o putere a lui 2
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct {
+	char nume_senzor[20];
+	int numar_pini;
+	int pret;
+} S;
+int verificare_nume(char* sir)
+{
+	int i;
+	if (sir[0] >= 'a' && sir[0] <= 'z')
+		return 0;
+	if (!(sir[1] >= '0' && sir[1] <= '9'))
+		return 0;
+	if (!(sir[2] == '-'))
+		return 0;
+	for (i = 3; i < strlen(sir); ++i)
+	{
+		if (sir[i] >= 'A' && sir[i] <= 'Z')
+			return 0;
+	}
+	return 1;
+}
+int verificare_pini(int nr)
+{
+	if (!(nr >= 1 && nr <= 8))
+		return 0;
+	return 1;
+}
+void adaugare(S* sen, int* n)
+{
+// • Numele senzorului este considerat citit corect dacă are următoarea formă.
+// Literă_marecifră-lieremici
+
+
+// • Numărul de pini este considerat citit corect dacă face parte din intervalul [1; 8].
+	printf("\n");
+	(*n)++;
+	do
+	{
+		printf("\nIntroduceti numele senzorului: ");
+		scanf("%s", sen[*n].nume_senzor);
+	} while (!verificare_nume(sen[*n].nume_senzor));
+
+	do
+	{
+		printf("Introduceti numarul pinilor: ");
+		scanf("%d", &sen[*n].numar_pini);
+	} while (!verificare_pini(sen[*n].numar_pini));
+
+	printf("Introduceti pretul senzorului: ");
+	scanf("%d", &sen[*n].pret);
+	printf("\n");
+}
+void afisare(S* sen, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; i++)
+	{
+		printf("\nNumele: %s \n", sen[i].nume_senzor);
+		printf("Numar pini: %d \n", sen[i].numar_pini);
+		printf("Pret: %.d \n", sen[i].pret);
+	}
+	printf("\n");
+}
+void afisare_desc(S* sen, int n)
+{
+	printf("\n");
+	int i, j;
+	S aux;
+	for (i = 0; i < n; ++i)
+	{
+		for (j = 0; j < n - i; ++j)
+		{
+			if (sen[j].pret < sen[j + 1].pret)
+			{
+				aux = sen[j];
+				sen[j] = sen[j + 1];
+				sen[j + 1] = aux;
+			}
+		}
+	}
+	afisare(sen, n);
+	printf("\n");
+}
+void afisare_putere(S* sen, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		if (!((sen[i].pret + 1) & sen[i].pret))
+		{
+			printf("\nNumele: %s \n", sen[i].nume_senzor);
+			printf("Numar pini: %d \n", sen[i].numar_pini);
+			printf("Pret: %d \n", sen[i].pret);
+
+		}
+	}
+	printf("\n");
+}
+int main()
+{
+	int n = -1, opt;
+	S senzori[50];
+	while (1) {
+		printf(
+		    "\n0.Iesire\n"
+		    "1. Citire/Adaugare\n"
+		    "2. Afisare in ordine descrescatoare\n"
+		    "3. Afișarea senzorilor care au prețul mai mic cu 1\n"
+		);
+		printf("Introduceti optiunea: ");
+		scanf("%d", &opt);
+
+		switch (opt) {
+
+		case 0:
+			printf("\nProgram finished succesfully!\n");
+			exit(0);
+			break;
+		case 1:
+			adaugare(senzori, &n);
+			break;
+		case 2:
+			afisare_desc(senzori, n);
+			break;
+		case 3:
+			afisare_putere(senzori, n);
+			break;
+		default:
+			printf("\nOptiunea gresita!\n");
+			break;
+		}
+	}
+	return 0;
+}
