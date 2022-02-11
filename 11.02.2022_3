@@ -62,6 +62,25 @@ void sortare(char** A, int n)
 	}
 	afisare(A, n);
 }
+void afisare_vector(char** A, int n)
+{
+	printf("\n");
+	int i;
+	int* arr;
+	arr = (int*)calloc(n, sizeof(int));
+	for (i = 0; i <= n; ++i)
+	{
+		if (A[i][0] == 'a' || A[i][0] == 'e' || A[i][0] == 'i' || A[i][0] == 'o' || A[i][0] == 'u')
+		{
+			arr[i]=strlen(A[i]);
+		}
+	}
+	for (i = 0; i < n; ++i)
+	{
+		printf("%d ", arr[i]);
+	}
+	printf("\n");
+}
 int main()
 {
 	int n, opt, i;
@@ -107,7 +126,7 @@ int main()
 			sortare(ann, n);
 			break;
 		case 3:
-
+			afisare_vector(ann, n);
 			break;
 		default:
 			printf("\nOptiunea gresita!\n");
