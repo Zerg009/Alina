@@ -1,0 +1,119 @@
+/*
+Fie un text format din maxim 50 de nume de animale, fiecare nume de animal având maxim 20 de caractere.
+Să se facă un meniu care să conţină următoarele operaţii:
+0. Ieșire
+1. Citirea a n nume de animale de la tastatură.
+Observații:
+• Numele animalului este considerat citit corect dacă are toate caracterele litere mici și aceasta are
+minim 3 caractere.
+• Ultimele două nume de animale se dau automat fiind egale cu “urs” și “lup”.
+2. Afișarea textului format din nume de animale în ordine descrescătoare după lungimea fiecărui nume de
+animal.
+3. Să se copieze într-un vector de elemente numere întregi toate lungimile numelor animalelor care au prima
+literă vocală, apoi vectorul rezultat să se afișeze pe ecran..
+Observatii:
+· Se va utiliza alocarea dinamică de memorie. La ieșire se va elibera toată memoria alocată dinamic.
+· Nu se vor folosii vectori de structuri definite (typedef struct).
+· Pentru fiecare opțiune se va crea o funcție, iar variabilele se vor transmite prin adresă.
+· Nu este permisă folosirea variabilelor globale.
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int verificare_nume(char* sir)
+{
+	int i;
+	if (strlen(sir) < 3)
+		return 0;
+	for (i = 0; i < strlen(sir); ++i)
+	{
+		if (sir[i] >= 'A' && sir[i] <= 'Z')
+			return 0;
+	}
+	return 1;
+}
+void afisare(char** A, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i < n; ++i)
+	{
+		printf("%s, ", A[i]);
+	}
+	printf("\n");
+}
+void sortare(char** A, int n)
+{
+	int i, j;
+	char aux[20];
+	for (i = 0; i < n; ++i)
+	{
+		for (j = 0; j < n - i; ++j)
+		{
+			if (strlen(A[j]) < strlen(A[j + 1]))
+			{
+				strcpy(aux, A[j]);
+				strcpy(A[j], A[j + 1]);
+				strcpy(A[j + 1], aux);
+			}
+		}
+	}
+	afisare(A, n);
+}
+int main()
+{
+	int n, opt, i;
+	char** ann;
+	ann = (char**)calloc(50, sizeof(char*));
+	for (i = 0; i < 50; ++i)
+	{
+		ann[i] = (char*)calloc(20, sizeof(char));
+	}
+
+	while (1) {
+		printf(
+		    "\n0.Iesire\n"
+		    "1. Citirea a n nume de animale de la tastatură.\n"
+		    "2. Afișarea textului format din nume de animale în ordine descrescătoare\n"
+		    "3. Să se copieze într-un vector de elemente numere întregi\n"
+		);
+		printf("Introduceti optiunea: ");
+		scanf("%d", &opt);
+
+		switch (opt) {
+
+		case 0:
+
+			printf("\nProgram finished succesfully!\n");
+			exit(0);
+			break;
+		case 1:
+			printf("Introduceti numarul de elemente: \n");
+			scanf("%d", &n);
+			strcpy(ann[n - 1], "urs");
+			strcpy(ann[n - 2], "lup");
+			for (i = 0; i < n - 2; ++i)
+			{
+				do
+				{
+					printf("Dati elementul ann[%d] = ", i);
+					scanf("%s", ann[i]);
+				} while (!verificare_nume(ann[i]));
+			}
+			break;
+		case 2:
+			sortare(ann, n);
+			break;
+		case 3:
+
+			break;
+		default:
+			printf("\nOptiunea gresita!\n");
+			break;
+		}
+	}
+	free(ann);
+	return 0;
+}
