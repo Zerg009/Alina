@@ -1,0 +1,134 @@
+/*
+Fie o matrice de caractere, pătratică de ordinul n.
+Să se facă un meniu interactiv care să conţină următoarele operaţii:
+0. Ieșire
+1. Citirea elementelor matricei de la tastatură.
+Observații:
+• Se va valida fiecare element citit, astfel încât acesta să fie literă mică sau cifră.
+• Elementele de pe diagonala principală se vor da automat, fiind egale cu ’i’.
+2. Afișarea elementelor de sub diagonala secundară.
+3. Să se afișeze forma binară a tuturor elementelor care sunt cifre din matrice. Înainte de afișare caracterele
+cifră din matrice se vor transforma în tip de dată întreg. Se vor utiliza operații pe biți în transformarea binară.
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int validare(char ch)
+{
+	//• acesta să fie literă mică sau cifră.
+
+	if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9'))
+		return 1;
+	return 0;
+}
+
+void adaugare(char M[][50], int n)
+{
+
+	//• Elementele de pe diagonala principală se vor da automat, fiind egale cu ’i’.
+	int i, j;
+	for (i = 0; i < n; ++i)
+	{
+		for (j = 0; j < n; ++j)
+		{
+			if (i == j)
+			{
+				M[i][j] = 'i';
+			}
+			else
+			{
+				do
+				{
+					printf("m[%d][%d]= ", i, j);
+					scanf(" %c", &M[i][j]);
+				}while(!validare(M[i][j]));
+			}
+		}
+	}
+
+
+}
+
+void afisare(char M[][50], int n)
+{
+	printf("\n");
+	int i, j;
+	for (i = 1; i < n; ++i)
+	{
+		for (j = n - i; j < n; ++j)
+		{
+			printf("%c ", M[i][j]);
+		}
+	}
+	printf("\n");
+}
+void to_binary(int n)
+{
+	printf("\n");
+	int i;
+	for (i = 31; i >= 0; i--)
+	{
+		printf("%d", (n >> i) & 1);
+	}
+	printf("\n");
+}
+void forma_binara(char M[][50], int n)
+{
+	printf("\n");
+	int i, j;
+	for (i = 0; i < n; ++i)
+	{
+		for (j = 0; j < n; ++j)
+		{
+			if (M[i][j] >= '0' && M[i][j] <= '9')
+			{
+				to_binary(M[i][j] - '0');
+			}
+		}
+	}
+	printf("\n");
+}
+
+int main()
+{
+	int n, opt;
+	char mat[50][50];
+
+	printf("Introduceti numarul de elemente: ");
+	scanf("%d", &n);
+
+
+	while (1) {
+		printf(
+		    "\n0.Iesire\n"
+		    "1. Citirea matricei\n"
+		    "2. Afisarea diagonalei secundare\n"
+		    "3. Afisarea formei binare a cifrelor din matrice\n"
+		);
+
+		printf("Introduceti optiunea: ");
+		scanf("%d", &opt);
+
+		switch (opt) {
+		case 0:
+			printf("\nProgram finished succesfully!\n");
+			exit(0);
+			break;
+		case 1:
+			adaugare(mat, n);
+			break;
+		case 2:
+			afisare(mat, n);
+			break;
+		case 3:
+			forma_binara(mat, n);
+			break;
+		default:
+			printf("\nOptiunea gresita!\n");
+			break;
+		}
+	}
+	return 0;
+}
