@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
+#include <stdlib.h>
+#define  _CRT_SECURE_NO_WARNINGS
+int main()
+{
+	// numar
+	int n = 1764;
+	1221 = 
+	int temp=n;
+	// vom face alt numar care va fi inversatul primului
+	int inv=0;
+	// inv = 1221
+	while(temp!=0)
+	{
+		// adaugama cifra cte o cifra
+		inv *= 10 + temp %10;
+		temp/= 10;
+	}
+	//temp=0;
+	if (inv==n)
+	{
+		printf("palindrom!\n");
+	}
+
+	char s[20];
+	int len =strlen(s);
+	int isPalindrom = 1;
+	// alibaba 7/2 =3 
+	// mama
+	for (i=0;i< len/2;i++)
+	{
+		if (s[i]!=s[len-i-1])
+		{
+			isPalindrom=0;
+			break;
+		}
+	}
+	if (isPalindrom)
+	{
+		printf("este palindrom!\n");
+	}
+	return 0;
+}
