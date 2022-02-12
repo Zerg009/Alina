@@ -1,0 +1,111 @@
+/*
+Sa se implemneteze un program care sa efectueze urmatoarele operatii
+1. Introducere numere
+2. Afisarea in sistem bina a acelor 2 numere
+3. Verificare paritatii
+4. Verificarea daca sunt puterea lui 2
+5. Setati bitul n pe o valoare predefinita
+6. Interschimbati numerele fara a 3 variabila
+
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+void to_binary(int nr)
+{
+	printf("\n");
+	int i;
+	for (i = 31; i >= 0; i--)
+	{
+		printf("%d", (nr >> i) & 1);
+	}
+	printf("\n");
+}
+void paritate(int nr)
+{
+	printf("\n");
+	if (nr & 1)
+		printf("Impar\n");
+	else
+		printf("Par\n");
+}
+void putere_doi(int nr)
+{
+	printf("\n");
+	if (!(nr & (nr - 1)))
+		printf("Putere a lui doi: %d\n", nr);
+	else
+		printf("Nu e putere a lui doi: %d\n", nr);
+}
+int set_bit(int nr, int pos, int val)
+{
+	if (val == 1)
+	{
+		return nr | (1 << pos);
+	}
+	else
+		return nr & ~(1 << pos);
+}
+void schimbare(int nr1, int nr2)
+{
+	nr1 = nr1 + nr2;
+	nr2 = nr1 - nr2;
+	nr1 = nr1 - nr2;
+
+	printf("%d, %d\n", nr1, nr2);
+}
+int main()
+{
+	int a, b, p, v, opt;
+
+	while (1) {
+		printf(
+		    "\n0.Iesire\n"
+		    "1. Introducere numere\n"
+		    "2. Afisarea in sistem bina a acelor 2 numere\n"
+		    "3. Verificare paritatii\n"
+		    "4. Verificarea daca sunt puterea lui 2\n"
+		    "5. Setati bitul n pe o valoare predefinita\n"
+		    "6. Interschimbati numerele fara a 3 variabila\n"
+		);
+		printf("Introduceti optiunea: ");
+		scanf("%d", &opt);
+
+		switch (opt) {
+		case 0:
+			printf("\nProgram finished succesfully!\n");
+			exit(0);
+			break;
+		case 1:
+			printf("Introduceti 2 numere: ");
+			scanf("%d%d", &a, &b);
+			break;
+		case 2:
+			to_binary(a);
+			to_binary(b);
+			break;
+		case 3:
+			paritate(a);
+			paritate(b);
+			break;
+		case 4:
+			putere_doi(a);
+			putere_doi(b);
+			break;
+		case 5:
+			printf("Introduceti pozitia bitului si valoarea bitului: ");
+			scanf("%d%d", &p, &v);
+			printf("%d\n",set_bit(a, p, v));
+			printf("%d\n",set_bit(b, p, v));
+			break;
+		case 6:
+			schimbare(a, b);
+			break;
+		default:
+			printf("\nOptiunea gresita!\n");
+			break;
+		}
+	}
+	return 0;
+}
