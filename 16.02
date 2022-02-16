@@ -1,0 +1,157 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Sa se scrie o programa in C care duc evidenta angajatilor unei companii. Fiecare salariat e descris prin nume ,
+// functie(director,programis,contabil), salar_baza
+// 1. Citirea unui angajat, citirea este socotită corectă, dacă directorul va avea salariul intre 9000 și 10000,
+// programistul (8000-9000) , contabil 7000-8000
+// 2. de pus toate numele angajatiolor intr-un tablou de siruri de caractere și de afișat
+// 3. Afisarea in ordine descrescatoarea dupa nume. De asemenea se va afisa si salar_brut care va fi salar-baza +15%
+typedef enum {
+	director,
+	programist,
+	contabil
+} F;
+typedef struct {
+	char nume[20];
+	F functia;
+	float salar;
+} A;
+
+void citirea(A* ang, int* n)
+{
+	printf("\n");
+	(*n)++;
+	printf("\nIntroduceti numele angajatului: ");
+	scanf("%s", ang[*n].nume);
+
+	printf("Introduceti functia angajatului(0:director, 1:programist, 2:contabil): ");
+	scanf("%d", &ang[*n].functia);
+
+	if (ang[*n].functia == 0)
+	{
+		do
+		{
+			printf("Introduceti salariul angajatului: ");
+			scanf("%f", &ang[*n].salar);
+		} while (!(ang[*n].salar >= 9000 && ang[*n].salar <= 10000));
+	}
+	if (ang[*n].functia == 1)
+	{
+		do
+		{
+			printf("Introduceti salariul angajatului: ");
+			scanf("%f", &ang[*n].salar);
+		} while (!(ang[*n].salar >= 8000 && ang[*n].salar < 9000));
+	}
+	if (ang[*n].functia == 2)
+	{
+		do
+		{
+			printf("Introduceti salariul angajatului: ");
+			scanf("%f", &ang[*n].salar);
+		} while (!(ang[*n].salar >= 7000 && ang[*n].salar < 8000));
+	}
+
+	printf("\n");
+}
+void afisare(A* ang, int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		printf("\nNume: %s\n", ang[i].nume);
+		printf("Functia: %d\n", ang[i].functia);
+		printf("Salariul: %.2f\n", ang[i].salar);
+	}
+	printf("\n");
+}
+void our_strcpy(char* s1, char* s2)
+{
+	int i;
+	for (i = 0; i <= strlen(s2); ++i)
+	{
+		s1[i] = s2[i];
+	}
+}
+void afisare_sir(A* ang, char sir[][50], int n)
+{
+	printf("\n");
+	int i;
+	for (i = 0; i <= n; ++i)
+	{
+		our_strcpy(sir[i], ang[i].nume);
+	}
+	for (i = 0; i <= n; ++i)
+	{
+		printf("%s ", sir[i]);
+	}
+	printf("\n");
+}
+void afisare_desc(A* ang, int n)
+{
+	printf("\n");
+	int i, j;
+	A aux;
+	for (i = 0; i < n; ++i)
+	{
+		for (j = 0; j < n - i; ++j)
+		{
+			if (strcmp(ang[j].nume, ang[j + 1].nume) < 0)
+			{
+				aux = ang[j];
+				ang[j] = ang[j + 1];
+				ang[j + 1] = aux;
+			}
+		}
+	}
+	for (i = 0; i <= n; ++i)
+	{
+		printf("\nNume: %s\n", ang[i].nume);
+		printf("Functia: %d\n", ang[i].functia);
+		printf("Salariul: %.2f\n", ang[i].salar);
+		printf("Salariul_brut: %.2f\n", ang[i].salar + ang[i].salar * 0.15);
+
+	}
+
+	printf("\n");
+}
+int main()
+{
+	int n = -1, opt;
+	A angajat[20];
+	char arr[50][50];
+
+	do
+	{
+		printf("\n1.Citirea unui angajat!\n"
+		       "2.Afisarea sir de caractere.\n"
+		       "3.Afisarea descrescator.\n"
+		       "0.Iesire.\n"
+		      );
+		printf("\nIntroduceti optiunea: ");
+		scanf("%d", &opt);
+
+		switch (opt)
+		{
+		case 0:
+			printf("\nProgramul s-a incheiat cu succes!");
+			exit(0);
+			break;
+		case 1:
+			citirea(angajat, &n);
+			break;
+		case 2:
+			afisare_sir(angajat, arr, n);
+			break;
+		case 3:
+			afisare_desc(angajat, n);
+			break;
+		}
+
+	} while (1);
+
+	return 0;
+}
