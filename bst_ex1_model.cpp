@@ -19,10 +19,10 @@ typedef struct Nod
     int height;
     Nod *left;
     Nod *right;
-    Nod *parent;
 } Node;
 
 bool isEch = true;
+vector<int> numPare;
 
 Node *newNode(int key)
 {
@@ -32,7 +32,6 @@ Node *newNode(int key)
     temp->key = key;
     temp->left = NULL;
     temp->right = NULL;
-    temp->parent = NULL;
     return temp;
 }
 
@@ -54,13 +53,11 @@ Node *add_lista(Node *lista, int key)
     if (key < lista->key)
     {
         lista->left = add_lista(lista->left, key);
-        lista->left->parent = lista;
         // lista->left->height = lista->height + 1;
     }
     else if (key > lista->key)
     {
         lista->right = add_lista(lista->right, key);
-        lista->right->parent = lista;
         // lista->right->height = lista->height + 1;
     }
     else
@@ -106,85 +103,126 @@ void checkEch(Node *lista)
         checkEch(lista->right);
     }
 }
-void deleteNode(Node* node)
+
+void deleteNode(Node *node)
 {
-    if(node)
+    if (node)
     {
         deleteNode(node->left);
-        //node->left = NULL;
+        // node->left = NULL;
         deleteNode(node->right);
         // node->right = NULL;
         free(node);
         node = NULL;
     }
 }
-void deletePare(Node* lista)
+
+void pare(Node *lista)
 {
-    if(lista)
+    if (lista)
     {
-        deletePare(lista->left);
-        if(lista->key % 2 == 0)
+        pare(lista->left);
+
+        if (lista->key % 2 == 0)
         {
-            if(!lista->parent == NULL)
-                if(lista->key > lista->parent->key)
-                {
-                    lista->parent->right = NULL;
-                }
-                else
-                {
-                    lista->parent->left = NULL;
-                }
-            deleteNode(lista);
+            numPare.push_back(lista->key);
         }
-        else
-            deletePare(lista->right);
-        
+
+        pare(lista->right);
     }
+}
+Node *predecesor(Node *node)
+{
+    Node *tmp = node;
+    while (tmp->right != NULL)
+    {
+        tmp = tmp->right;
+    }
+    return tmp;
+}
+Node *deleteNum(Node *lista, int key)
+{
+    if (!lista)
+    {
+        return NULL;
+    }
+
+    if (key > lista->key)
+    {
+        lista->right = deleteNum(lista->right, key);
+    }
+    else if (key < lista->key)
+    {
+        lista->left = deleteNum(lista->left, key);
+    }
+    else
+    {
+
+        if (lista->left == NULL && lista->right == NULL)
+        {
+            return NULL;
+        }
+        else if (lista->left == NULL)
+        {
+            Node *tmp = lista->right;
+            free(lista);
+            return tmp;
+        }
+        else if (lista->right == NULL)
+        {
+            Node *tmp = lista->left;
+            free(lista);
+            return tmp;
+        }
+
+        Node *pred = predecesor(lista->left);
+        lista->key = pred->key;
+        lista->left = deleteNum(lista->left, pred->key);
+    }
+    return lista;
 }
 int main()
 {
     Node *lista;
 
-    // lista = add_lista(lista, 12);
-    // lista = add_lista(lista, -7);
-    // lista = add_lista(lista, 45);
-    // lista = add_lista(lista, 32);
-    // lista = add_lista(lista, 2);
-    // lista = add_lista(lista, 22);
-    // lista = add_lista(lista, 1);
-    // lista = add_lista(lista, 2);
-    // lista = add_lista(lista, 3);
-    // lista = add_lista(lista, 4);
-    // lista = add_lista(lista, 9);
-    // lista = add_lista(lista, 90);
-    // lista = add_lista(lista, 89);
-    // lista = add_lista(lista, 225);
-    // lista = add_lista(lista, 0);
-    
-    lista = add_lista(lista, 25);
-    lista = add_lista(lista, 21);
-    lista = add_lista(lista, 10);
+    lista = add_lista(lista, 12);
+    lista = add_lista(lista, -7);
+    lista = add_lista(lista, 45);
+    lista = add_lista(lista, 32);
+    lista = add_lista(lista, 2);
     lista = add_lista(lista, 22);
-    lista = add_lista(lista, 41);
-    lista = add_lista(lista, 30);
-    lista = add_lista(lista, 50);
+    lista = add_lista(lista, 1);
+    lista = add_lista(lista, 2);
+    lista = add_lista(lista, 3);
+    lista = add_lista(lista, 4);
+    lista = add_lista(lista, 9);
+    lista = add_lista(lista, 90);
+    lista = add_lista(lista, 89);
+    lista = add_lista(lista, 225);
+    lista = add_lista(lista, 0);
+
+    // lista = add_lista(lista, 25);
+    // lista = add_lista(lista, 21);
+    // lista = add_lista(lista, 10);
+    // lista = add_lista(lista, 22);
+    // lista = add_lista(lista, 41);
+    // lista = add_lista(lista, 30);
+    // lista = add_lista(lista, 50);
 
     setEch(lista);
     checkEch(lista);
-    if(isEch)
+    if (isEch)
         cout << "\nEchilibrat!\n";
     else
         cout << "\nNu e echilibrat!\n";
     isEch = true;
 
-    if(lista->key % 2 == 0)
-    {
-        deletePare(lista);
-        lista = NULL;
-    }
-    else
-        deletePare(lista);
+    pare(lista);
 
+    for (int i : numPare)
+    {
+        lista = deleteNum(lista, i);
+    }
     cout << "Keys: " << endl;
     inOrder(lista);
 
